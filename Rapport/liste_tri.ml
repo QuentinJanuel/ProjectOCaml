@@ -1,6 +1,7 @@
 #load "hasard.cmo";;
 
 Hasard.init_random ();;
+let myList = Hasard.random_list 10 10;;
 
 
 (* Tri par création du maximum *)
@@ -35,10 +36,8 @@ let rec tri_creation_max comp l =
 
 (* Tests *)
 
-let myList = Hasard.random_list 10 10;;
 tri_creation_max (<) myList;;
 tri_creation_max (>) myList;;
-
 
 (* Tri par partition-fusion *)
 
@@ -76,6 +75,44 @@ let rec tri_partition_fusion comp l =
 
 (* Tests *)
 
-let myList = Hasard.random_list 10 10;;
 tri_partition_fusion (<) myList;;
 tri_partition_fusion (>) myList;;
+
+
+(* Tri par arbre binaire de recherche *)
+
+type 'a arbreBinaire =
+	| Noeud of 'a * 'a arbreBinaire * 'a arbreBinaire
+	| ArbreVide
+;;
+
+let rec insere_noeud comp x a =
+	match a with
+	| ArbreVide -> Noeud(x, ArbreVide, ArbreVide)
+	| Noeud(x2, left, right) ->
+		if comp x x2 then
+			Noeud(x2, insere_noeud comp x left, right)
+		else
+			Noeud(x2, left, insere_noeud comp x right)
+;;
+
+let rec insere_liste_noeuds comp l a =
+	match l with
+	| [] -> a
+	| x::subL ->
+		let a2 = insere_noeud comp x a in
+			insere_liste_noeuds comp subL a2
+;;
+
+let rec parcours_arbre a =
+	match a with
+	| ArbreVide -> []
+	| Noeud(x, left, right) -> (parcours_arbre left)@[x]@(parcours_arbre right)
+;;
+
+let tri_par_abr comp l = parcours_arbre (insere_liste_noeuds comp l ArbreVide);;
+
+(* Tests *)
+
+tri_par_abr (<) myList;;
+tri_par_abr (>) myList;;
