@@ -5,13 +5,36 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
-
 \usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+
+\lstset{
+	frame = tb,
+	language = Caml,
+	aboveskip = 3mm,
+	belowskip = 3mm,
+	showstringspaces = false,
+	columns = flexible,
+	basicstyle = {\small\ttfamily},
+	numberstyle = \color{blue},
+	keywordstyle = \color{red},
+	commentstyle = \color{gray},
+	stringstyle = \color{dkgreen},
+	breaklines = true,
+	breakatwhitespace = true,
+	tabsize = 4
+}
 
 \pagestyle{headings}
 
-\title{Rapport}
-\author{Auteurs}
+\title{Rapport \\
+Projet : programmation fonctionnelle}
+\author{Quentin Januel \& Clément Defrétiére}
 \date{\today}
 
 \begin{document}
@@ -19,56 +42,96 @@
 \maketitle
 
 \newpage
+\section{Tests}
 
-\section{Une première partie}
+\subsection{Listes courtes}
+% 
 
-\subsection{Une sous-partie}
+\subsection{Listes longues}
+% 
 
-Une liste :
-\begin{itemize}
-\item une chose ;
-\item deux.
-\end{itemize}
+\subsection{Listes déjà triées}
+% 
 
-Une liste énumérée :
-\begin{enumerate}
-\item une chose ;
-\item deux.
-\end{enumerate}
+\newpage
+\section{Analyse de complexité}
 
-\begin{verbatim}
-du code source
-\end{verbatim}
+Nous allons à présent analyser le temps que prend chaque fonction de tri en fonction de la longueur de la liste qu'on lui passe en argument, en nous basant directement sur le code source de chacune des trois fonctions de tri. \\
 
-\section{Une deuxième partie}
+Pour ce faire, nous allons d'abord considérer que ce temps est proportionnel au nombre de calculs que doit faire tel algorithme en fonction de la longueur de la liste. \\
 
-Des maths : $a_0, \ldots, a_n$
-
-$$
-(a+b)^2 = a^3+3a^2b+3ab^2+b^3  
-$$
-
-Un tableau :
-\begin{table}[htbp]
-  \centering
-  \begin{tabular}{||l|c|r|}\hline
-    \textbf{Produit} & \textbf{Prix par} & \textbf{Prix en euro}\\\hline\hline
-    Diamant          & carat             & 5000                 \\\hline
-    Topaze           & gramme            & 2500                 \\\hline
-    Banane           & kilo              & 2                    \\\hline
-    Ferrari          & unité             & 90000                \\\hline
-  \end{tabular}
-  \caption{Une légende}
-\end{table}
+Ainsi, pour une liste de taille $N$, nous recherchons l'ordre de grandeur en fonction de $N$ du nombre d'opérations que va effectuer l'algorithme. \\ \\
 
 
-\section{Insertion d'images}
+Par soucis de simplification, nous allons considérer que les fonctions comme \texttt{List.length} ou \texttt @ sont instantannées ou au moins proportionnelles à la longeur des listes avec lesquelles on les utilise. \\ \\
 
-L'insertion d'image se fait au moyen de la commande \texttt{includegraphics} du package \texttt{graphicx}. Si vous compilez avec \texttt{pdflatex}, vous ne pouvez inclure que des images au format png, jpg et pdf.
-Voir le code source de ce fichier pour un exemple d'insertion d'image.
+
+% Il est important de noter que, ne pouvant pas connaitre le temps exact des fonctions, nous ne recherchons que leur taux d'accroissement. \\ 
+
+% Ce dernier est suffisant pour déterminer quelle fonction sera la meilleure à partir d'une taille de listes suffisamment grande. \\ \\
+
+
+Afin de représenter la complexité d'un algorithme, nous allons utiliser la notation $O$. \\
+Ainsi, un algorithme ayant une complexité $O(n^2)$ sera un algorithme qui, pour une liste de taille $n$, effectue $n \times n$ opérations (et prend donc un temps relativement proportionnel). \\ \\
+
+Pour finir, nous n'allons pas prendre en compte les opérations ne dépendant pas de $n$, ni les facteurs multiplicatifs de $n$ puisque ces derniers n'auront aucun impact quand $n$ sera suffisamment grand. \\
+Une complexité $O(100+5 \times n)$ est donc la même que $O(n)$.
+
+\newpage
+\subsection{Tri par création du maximum}
+% 
+
+\newpage
+\subsection{Tri par fusion}
+Voici le code source de la fonction de tri par fusion : \\
+
+\begin{lstlisting}
+let rec tri_partition_fusion comp l =
+	let l1, l2 = partitionne l in
+		if (List.length l1)+(List.length l2) < 2 then
+			l1@l2
+		else
+			let sorted1 = tri_partition_fusion comp l1
+			and sorted2 = tri_partition_fusion comp l2 in
+				fusionne comp sorted1 sorted2
+;;
+\end{lstlisting}
+
+Nous pouvons constater que cette fonction fait elle même appel à deux fonctions ; \texttt{partitionne} et \texttt{fusionne}.
+Ces dernières ont toutes deux une complexité $O(n)$. \\
+
+A chaque étape, cet algorithme coupe la liste en deux, pour ensuite les fusionner. \\
+Nous pouvons le représenter par le diagramme ci dessous : \\
+
 \begin{center}
-\includegraphics[scale=0.5]{image.jpg}
+	\includegraphics[scale=0.5]{mergesortDiagram.png}
 \end{center}
+
+Appelons niveau $i$ de l'algorithme la $i^{eme}$ ligne du schéma. \\
+
+A chaque niveau, la liste est coupé en $p$ parties et la longueur de chaque sous liste est de $n/p$. Il y aura donc exactement $n$ calculs par niveau (puisque, rappelons le, \texttt{partitionne} et \texttt{fusionne} sont de complexité $O(n)$). \\
+
+La complexité de cet algorithme est donc $O(n \times <\#niveaux>)$. \\
+Le nombre de niveaux est le nombre de fois qu'il faut couper une liste en deux jusqu'à n'obtenir qu'un seul élément. \\
+Supposons que $n$ soit de la forme $2^a$, il y aura donc $a$ niveaux. \\
+Plus généralement, pour une liste de longueur $n$, il y aura approximativement $log_{2}(n) = log(n)/log(2)$ niveaux. \\ \\
+
+Cet algorithme a donc une complexité $O(n \times ln(n))$.
+
+
+\newpage
+\subsection{Tri par arbre binaire de recherche}
+% 
+
+
+\newpage
+\section{Comparaisons des courbes}
+
+
+\newpage
+\section{Bilan}
+
+
 
 
 \end{document}
