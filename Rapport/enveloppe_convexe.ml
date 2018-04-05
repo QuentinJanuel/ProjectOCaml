@@ -2,4 +2,7 @@
 
 open Graphics;;
 
-Graphics.open_graph "";;
+open_graph "";;
+
+let rec loop () = loop () in
+	loop ();;

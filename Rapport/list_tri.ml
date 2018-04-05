@@ -1,8 +1,8 @@
+(* 
 #load "hasard.cmo";;
-
 Hasard.init_random ();;
-Random.self_init ();;
 let myList = Hasard.random_list 10 10;;
+ *)
 
 
 (* Tri par création du maximum *)
@@ -38,8 +38,10 @@ let rec tri_creation_max comp l =
 
 (* Tests *)
 
+(* 
 tri_creation_max (<) myList;;
 tri_creation_max (>) myList;;
+ *)
 
 
 (* Tri par partition-fusion *)
@@ -79,8 +81,10 @@ let rec tri_partition_fusion comp l =
 
 (* Tests *)
 
+(*
 tri_partition_fusion (<) myList;;
 tri_partition_fusion (>) myList;;
+ *)
 
 
 (* Tri par arbre binaire de recherche *)
@@ -119,5 +123,26 @@ let tri_par_abr comp l = parcours_arbre (insere_liste_noeuds comp l ArbreVide);;
 
 (* Tests *)
 
+(* 
 tri_par_abr (<) myList;;
 tri_par_abr (>) myList;;
+ *)
+
+
+(* Suite *)
+(* Clément, je n'ai pas encore fait l'analyse de complexité de chaque fonction donc je fais arbitrairement choisir tri_par_abr *)
+
+let tri = tri_par_abr;;
+
+let min_list comp l =
+	let nComp a b = not (comp a b) in
+		selectionne_max nComp l
+;;
+
+let rec suppr_doublons l =
+	match l with
+	| [] -> l
+	| x::subL ->
+		let l2 = suppr_doublons subL in
+			if List.mem x subL then l2 else x::l2
+;;
