@@ -1,0 +1,17 @@
+{
+	"cmd":["ocamlc","$file","-o","output.exe","&&","start","cmd","/k","output.exe"],
+	"selector":"source.c",
+	"shell":true,
+	"working_dir":"$file_path",
+	"variants":
+	[
+		{
+			"name": "Interpreter",
+			"cmd": ["start", "cmd", "/k", "ocaml < $file_name"]
+		},
+		{
+			"name": "Graphics",
+			"cmd": ["ocamlc","graphics.cma","$file","-o","output.exe","&&","start","output.exe"]
+		}
+	]
+}
