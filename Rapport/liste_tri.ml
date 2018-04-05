@@ -1,6 +1,7 @@
 #load "hasard.cmo";;
 
 Hasard.init_random ();;
+Random.self_init ();;
 let myList = Hasard.random_list 10 10;;
 
 
