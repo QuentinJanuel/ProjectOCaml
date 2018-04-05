@@ -6,6 +6,7 @@ let myList = Hasard.random_list 10 10;;
 
 
 (* Tri par création du maximum *)
+(* Complexité : O(?) *)
 
 let rec selectionne_max comp l =
 	match l with
@@ -40,7 +41,9 @@ let rec tri_creation_max comp l =
 tri_creation_max (<) myList;;
 tri_creation_max (>) myList;;
 
+
 (* Tri par partition-fusion *)
+(* Complexité : O(n*log(n)) *)
 
 let partitionne l =
 	let rec getHalf even l =
@@ -81,6 +84,7 @@ tri_partition_fusion (>) myList;;
 
 
 (* Tri par arbre binaire de recherche *)
+(* Complexité : O(?) *)
 
 type 'a arbreBinaire =
 	| Noeud of 'a * 'a arbreBinaire * 'a arbreBinaire

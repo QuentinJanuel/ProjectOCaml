@@ -1,2 +1,5 @@
-let a = 1;;
-print_string "Hello";;
+#load "graphics.cma";;
+
+open Graphics;;
+
+Graphics.open_graph "";;
