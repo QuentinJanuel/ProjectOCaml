@@ -9,7 +9,6 @@
 \usepackage{listings}
 \usepackage{color}
 
-
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 
@@ -42,16 +41,26 @@ Projet : programmation fonctionnelle}
 \maketitle
 
 \newpage
-\section{Tests}
+\section{Analyse naïve des algorithmes}
 
-\subsection{Listes courtes}
-% 
+% n = 1000
+% list's length = 100
+% max    : 3.728
+% fusion : 0.129
+% arbre  : 0.079
 
-\subsection{Listes longues}
-% 
+% deja triee
+% n = 1000
+% list's length = 100
+% max    : 3.712
+% fusion : 0.122
+% arbre  : 0.312
 
-\subsection{Listes déjà triées}
-% 
+% n = 1
+% list's length = 1000
+% max    : 3.120
+% fusion : 0.002
+% arbre  : 0.004
 
 \newpage
 \section{Analyse de complexité}
@@ -63,7 +72,7 @@ Pour ce faire, nous allons d'abord considérer que ce temps est proportionnel au 
 Ainsi, pour une liste de taille $N$, nous recherchons l'ordre de grandeur en fonction de $N$ du nombre d'opérations que va effectuer l'algorithme. \\ \\
 
 
-Par soucis de simplification, nous allons considérer que les fonctions comme \texttt{List.length} ou \texttt @ sont instantannées ou au moins proportionnelles à la longeur des listes avec lesquelles on les utilise. \\ \\
+Par soucis de simplicité, nous allons considérer que les fonctions comme \texttt{List.length} ou \texttt @ sont instantannées ou au moins proportionnelles à la longeur des listes avec lesquelles on les utilise. \\ \\
 
 
 % Il est important de noter que, ne pouvant pas connaitre le temps exact des fonctions, nous ne recherchons que leur taux d'accroissement. \\ 
@@ -79,22 +88,40 @@ Une complexité $O(100+5 \times n)$ est donc la même que $O(n)$.
 
 \newpage
 \subsection{Tri par création du maximum}
-% 
+Voici le code source de la fonction de tri par création du maximum (ou tri par selection) : \\
+
+\begin{lstlisting}
+let rec tri l =
+	if l = [] then [] else
+	let max = selectionne_max comp l in
+		let subL = supprime max l in
+			let sorted = tri comp subL in
+				sorted@[max]
+\end{lstlisting}
+
+Afin de selectionner l'élément maximum de la liste, \texttt{selectionne\_max} doit faire $n-1$ comparaisons. \\
+Ensuite la fonction fait une récurrence sur elle même avec une sous liste de longueur $n-1$, jusqu'à se retrouver avec une liste vide. \\
+
+Le nombre total de calculs sera donc de
+$$
+(n-1)+(n-2)+...+1 = \sum_{k=1}^{n-1}k = \frac{n\times(n-1)}{2}
+$$
+
+La complexité de l'algorithme est $O(n^2)$.
 
 \newpage
 \subsection{Tri par fusion}
 Voici le code source de la fonction de tri par fusion : \\
 
 \begin{lstlisting}
-let rec tri_partition_fusion comp l =
+let rec tri comp l =
 	let l1, l2 = partitionne l in
 		if (List.length l1)+(List.length l2) < 2 then
 			l1@l2
 		else
-			let sorted1 = tri_partition_fusion comp l1
-			and sorted2 = tri_partition_fusion comp l2 in
+			let sorted1 = tri comp l1
+			and sorted2 = tri l2 in
 				fusionne comp sorted1 sorted2
-;;
 \end{lstlisting}
 
 Nous pouvons constater que cette fonction fait elle même appel à deux fonctions ; \texttt{partitionne} et \texttt{fusionne}.
@@ -111,26 +138,58 @@ Appelons niveau $i$ de l'algorithme la $i^{eme}$ ligne du schéma. \\
 
 A chaque niveau, la liste est coupé en $p$ parties et la longueur de chaque sous liste est de $n/p$. Il y aura donc exactement $n$ calculs par niveau (puisque, rappelons le, \texttt{partitionne} et \texttt{fusionne} sont de complexité $O(n)$). \\
 
-La complexité de cet algorithme est donc $O(n \times <\#niveaux>)$. \\
+La complexité de cet algorithme est donc $O(n \times \#niveaux)$. \\
 Le nombre de niveaux est le nombre de fois qu'il faut couper une liste en deux jusqu'à n'obtenir qu'un seul élément. \\
 Supposons que $n$ soit de la forme $2^a$, il y aura donc $a$ niveaux. \\
-Plus généralement, pour une liste de longueur $n$, il y aura approximativement $log_{2}(n) = log(n)/log(2)$ niveaux. \\ \\
+Plus généralement, pour une liste de longueur $n$, il y aura approximativement $log_{2}(n) = \log(n)/\log(2)$ niveaux. \\ \\
 
-Cet algorithme a donc une complexité $O(n \times ln(n))$.
+Cet algorithme a donc une complexité $O(n \times \log(n))$.
 
 
 \newpage
 \subsection{Tri par arbre binaire de recherche}
-% 
+Voici le code source de la fonction de tri par arbre : \\
 
+\begin{lstlisting}
+let tri comp l = parcours_arbre (insere_liste_noeuds comp l ArbreVide)
+\end{lstlisting}
+
+Afin de déterminer sa complexité, il nous faut donc celle de \texttt{parcours\_arbre} et de \texttt{insere\_liste\_noeuds}. \\
+Il est suffisamment évident que la première est de complexité $O(n)$. \\
+
+Quant à la seconde, cela dépend de la liste à placer dans l'arbre. \\
+Si cette liste est déjà triée (ce qui est le pire scénario), chaque élément va être placé à droite et l'arbre n'aura donc qu'une seule branche et une longueur de n. \\
+
+En d'autres thermes, placer le premier élément prendra 1 calcul, le second 2, et ainsi de suite. Le nombre total de calculs sera donc
+$$
+1+2+3+...+n = \sum_{k=1}^{n} = \frac{n\times(n+1)}{2}
+$$
+
+Ce qui signifie que cet algorithme a une complexité de $O(n^2)$. \\
+
+Il est toutefois important de noter qu'en moyenne, l'arbre s'équilibre et l'algorithme a donc une complexité de seulement $O(n \times \log(n))$ (en procédant avec le même raisonnement que pour l'algorithme précédent). \\ \\
+
+Ouverture : \\
+
+L'arbre utilisé n'est pas équilibré, mais il aurait été possible de faire l'algorithme avec un arbre équilibré. \\
+Ainsi, nous n'aurions jamais eu une seule branche et la complexité aurait été de $O(n \times \log(n))$.
 
 \newpage
-\section{Comparaisons des courbes}
+\section{Comparaison des efficacités}
+Nous pouvons grapher la complexité des différents algorithmes afin de comparer leurs croissances.
+\begin{center}
+	\includegraphics[scale=0.8]{curves.png}
+\end{center}
 
+En prenant pour critère le temps, le meilleur algorithme est donc le tri par fusion.\\
 
-\newpage
-\section{Bilan}
+Il est important de noter que le tri par arbre n'est pas aussi mauvais que le tri par maximum en général, ce graphique prend en considération le pire scénario. \\ \\
 
+Ouverture : \\
+
+Nous pourrions comparer les algorithmes en fonction de l'espace mémoire qui leur est nécessaire. \\
+Par exemple, le tri par maximum n'a besoin d'aucune mémoire supplémentaire, mais le tri par arbre crée un arbre temporaire de $n$ éléments. \\
+L'espace mémoire requis pour le tri par maximum en donc en $O(1)$, et $O(n)$ pour le tri par arbre.
 
 
 

@@ -1,10 +1,6 @@
-\BOOKMARK [1][-]{section.1}{Tests}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{Listes courtes}{section.1}% 2
-\BOOKMARK [2][-]{subsection.1.2}{Listes longues}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Listes d\351j\340 tri\351es}{section.1}% 4
-\BOOKMARK [1][-]{section.2}{Analyse de complexit\351}{}% 5
-\BOOKMARK [2][-]{subsection.2.1}{Tri par cr\351ation du maximum}{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.2}{Tri par fusion}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.3}{Tri par arbre binaire de recherche}{section.2}% 8
-\BOOKMARK [1][-]{section.3}{Comparaisons des courbes}{}% 9
-\BOOKMARK [1][-]{section.4}{Bilan}{}% 10
+\BOOKMARK [1][-]{section.1}{Analyse na\357ve des algorithmes}{}% 1
+\BOOKMARK [1][-]{section.2}{Analyse de complexit\351}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Tri par cr\351ation du maximum}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Tri par fusion}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Tri par arbre binaire de recherche}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Comparaison des efficacit\351s}{}% 6

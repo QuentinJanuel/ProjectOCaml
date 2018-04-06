@@ -1,3 +1,4 @@
+#directory "Modules";;
 #load "hasard.cmo";;
 #load "list_tri.cmo";;
 

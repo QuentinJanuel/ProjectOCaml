@@ -1,12 +1,16 @@
 (* 
+Il n'est pas possible de compiler en .cmo un code en OCaml comportant une directive.
+Les tests étant finis, nous n'avons plus besoin de charger le module 'hasard'.
+ *)
+(* 
+#directory "Modules";;
 #load "hasard.cmo";;
 Hasard.init_random ();;
-let myList = Hasard.random_list 10 10;;
+let ma_liste = Hasard.random_list 10 10;;
  *)
 
 
 (* Tri par création du maximum *)
-(* Complexité : O(?) *)
 
 let rec selectionne_max comp l =
 	match l with
@@ -39,13 +43,12 @@ let rec tri_creation_max comp l =
 (* Tests *)
 
 (* 
-tri_creation_max (<) myList;;
-tri_creation_max (>) myList;;
+tri_creation_max (<) ma_liste;;
+tri_creation_max (>) ma_liste;;
  *)
 
 
 (* Tri par partition-fusion *)
-(* Complexité : O(n*log(n)) *)
 
 let partitionne l =
 	let rec getHalf even l =
@@ -82,13 +85,12 @@ let rec tri_partition_fusion comp l =
 (* Tests *)
 
 (*
-tri_partition_fusion (<) myList;;
-tri_partition_fusion (>) myList;;
+tri_partition_fusion (<) ma_liste;;
+tri_partition_fusion (>) ma_liste;;
  *)
 
 
 (* Tri par arbre binaire de recherche *)
-(* Complexité : O(?) *)
 
 type 'a arbreBinaire =
 	| Noeud of 'a * 'a arbreBinaire * 'a arbreBinaire
@@ -124,15 +126,39 @@ let tri_par_abr comp l = parcours_arbre (insere_liste_noeuds comp l ArbreVide);;
 (* Tests *)
 
 (* 
-tri_par_abr (<) myList;;
-tri_par_abr (>) myList;;
+tri_par_abr (<) ma_liste;;
+tri_par_abr (>) ma_liste;;
+ *)
+
+
+(* Tests de rapidité des différents algorithmes *)
+
+(* 
+let ma_liste = tri (<) (Hasard.random_list 10 100);;
+let n = 1000;;
+
+let tests_tri algo =
+	let temps_debut = Sys.time () in
+		let rec tris_boucle p algo l =
+			if p = 0 then
+				0
+			else
+				let _ = algo (<) l in
+					tris_boucle (p-1) algo l
+		in
+		let _ = tris_boucle n algo ma_liste in
+			Sys.time ()-.temps_debut
+;;
+
+let max = tests_tri tri_creation_max;;
+let fusion = tests_tri tri_partition_fusion;;
+let arbre = tests_tri tri_par_abr;;
  *)
 
 
 (* Suite *)
-(* Clément, je n'ai pas encore fait l'analyse de complexité de chaque fonction donc je fais arbitrairement choisir tri_par_abr *)
 
-let tri = tri_par_abr;;
+let tri = tri_partition_fusion;;
 
 let min_list comp l =
 	let nComp a b = not (comp a b) in

@@ -1,6 +1,7 @@
+#directory "Modules";;
 #load "hasard.cmo";;
 
-Hasard.init_random ();;
+(* Hasard.init_random ();; *)
 Random.self_init ();;
 
 (* Tri par creation du maximum *)
