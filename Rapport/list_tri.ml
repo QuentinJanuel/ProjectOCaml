@@ -134,25 +134,29 @@ tri_par_abr (>) ma_liste;;
 (* Tests de rapidité des différents algorithmes *)
 
 (* 
-let ma_liste = tri (<) (Hasard.random_list 10 100);;
-let n = 1000;;
-
+let rec liste_de_listes l n =
+	if n = 0 then [] else
+		let el = Hasard.random_list 10 l in
+			el::(liste_de_listes l (n-1))
+;;
+let n = 1;;
+let mes_listes = liste_de_listes 1000 n;;
 let tests_tri algo =
 	let temps_debut = Sys.time () in
-		let rec tris_boucle p algo l =
+		let rec tris_boucle p algo =
 			if p = 0 then
 				0
 			else
-				let _ = algo (<) l in
-					tris_boucle (p-1) algo l
+				let ma_liste = List.nth mes_listes (p-1) in
+					let _ = algo (<) ma_liste in
+						tris_boucle (p-1) algo
 		in
-		let _ = tris_boucle n algo ma_liste in
+		let _ = tris_boucle n algo in
 			Sys.time ()-.temps_debut
 ;;
-
-let max = tests_tri tri_creation_max;;
+let max    = tests_tri tri_creation_max;;
 let fusion = tests_tri tri_partition_fusion;;
-let arbre = tests_tri tri_par_abr;;
+let arbre  = tests_tri tri_par_abr;;
  *)
 
 
