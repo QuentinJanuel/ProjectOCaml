@@ -43,24 +43,38 @@ Projet : programmation fonctionnelle}
 \newpage
 \section{Analyse naïve des algorithmes}
 
-% n = 1000
-% list's length = 100
-% max    : 3.728
-% fusion : 0.129
-% arbre  : 0.079
+Nous avons fait trier des listes aux trois algorithmes en altérant différents paramètres afin de comparer leur temps d'exécution. \\
 
-% deja triee
-% n = 1000
-% list's length = 100
-% max    : 3.712
-% fusion : 0.122
-% arbre  : 0.312
+\begin{table}[htbp]
+	\centering
+		\begin{tabular}{||c|c|c||c|c|c||}
+		\hline
+		\multicolumn{3}{||c||}{
+			\textbf{Conditions}
+		} &
+		\multicolumn{3}{c||}{
+			\textbf{Temps d'exécution (en seconde)}
+		} \\
+		\hline
+		\textbf{Déjà triée} &
+		\textbf{Nombre de tris} &
+		\textbf{Longueur} &
+		\textbf{Maximum} & \textbf{Fusion} & \textbf{Arbre} \\
+		\hline \hline
+		Non & 1000 & 100 & 3.728 & 0.129 & 0.079 \\
+		\hline
+		Oui & 1000 & 100 & 3.712 & 0.122 & 0.312 \\
+		\hline
+		Non & 1 & 1000 & 3.120 & 0.002 & 0.004 \\
+		\hline
+		\end{tabular}
+\end{table}
 
-% n = 1
-% list's length = 1000
-% max    : 3.120
-% fusion : 0.002
-% arbre  : 0.004
+Il s'avère que les meilleurs algorithmes sont le tri par fusion et par arbre. \\
+Toutefois, même si le tri par arbre est plus rapide sur les listes courtes, le tri par fusion devient meilleur à partir d'une certaine longueur de liste. \\
+De plus, le tri par arbre semble considérablement ralentir lorsque la liste est préalablement triée. \\
+
+Le meilleur algorithme est donc probablement le tri par fusion.
 
 \newpage
 \section{Analyse de complexité}
@@ -181,7 +195,7 @@ Nous pouvons grapher la complexité des différents algorithmes afin de comparer l
 	\includegraphics[scale=0.8]{curves.png}
 \end{center}
 
-En prenant pour critère le temps, le meilleur algorithme est donc le tri par fusion.\\
+En prenant pour critère le temps, le meilleur algorithme est donc le tri par fusion, ce qui correspond à notre conjecture émise suite aux tests de rapidité.\\
 
 Il est important de noter que le tri par arbre n'est pas aussi mauvais que le tri par maximum en général, ce graphique prend en considération le pire scénario. \\ \\
 
