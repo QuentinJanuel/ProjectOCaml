@@ -1,143 +1,108 @@
-(* 
-#load "hasard.cmo";;
+(* #load "hasard.cmo";;
+
 Hasard.init_random ();;
-let myList = Hasard.random_list 10 10;;
- *)
+Random.self_init ();; *)
 
+(* ------------------------------------------------ *)
+(* Tri par creation du maximum (Selection sort) *)
 
-(* Tri par création du maximum *)
-(* Complexité : O(?) *)
-
-let rec selectionne_max comp l =
-	match l with
-	| [] -> failwith "Calling 'selectionne_max' with an empty list"
-	| x::subL ->
-		if List.length subL = 0 then x
-		else
-			let x2 = selectionne_max comp subL in
-				if comp x x2 then x2 else x
+(* Renvoie le max de l par rapport à la fonction comp *)
+let rec selectionne_max comp l = match l with
+	| [] -> failwith "Cannot find a max in an empty list"
+	| [x] -> x
+	| x::y -> let c = selectionne_max comp y in
+		if comp c x then x else c
 ;;
 
-let rec supprime x l =
-	match l with
-	| [] -> l
-	| x2::subL ->
-		if x = x2 then subL
-		else x2::(supprime x subL)
+(* Supprime la premiere occurence de x dans l *)
+let rec supprime x l = match l with
+	| [] -> []
+	| a::b -> if a = x then b else a::(supprime x b)
 ;;
 
 let ajoute_fin x l = l@[x];;
 
+(* Fonction de tri *)
 let rec tri_creation_max comp l =
 	if l = [] then l else
 	let max = selectionne_max comp l in
-		let subL = supprime max l in
-			let sorted = tri_creation_max comp subL in
-				ajoute_fin max sorted
+		let temp_list = supprime max l in
+			ajoute_fin max (tri_creation_max comp temp_list)
 ;;
 
-(* Tests *)
+(* ------------------------------------------------ *)
+(* Tri par partition-fusion (Merge sort) *)
 
-(* 
-tri_creation_max (<) myList;;
-tri_creation_max (>) myList;;
- *)
-
-
-(* Tri par partition-fusion *)
-(* Complexité : O(n*log(n)) *)
-
+(* Renvoie un couple de la forme ([l0;l2;l4;...], [l1;l3;l5;...]) *)
 let partitionne l =
-	let rec getHalf even l =
-		match l with
-		| [] -> []
-		| [x] -> if even then [] else [x]
-		| x::(y::subL) ->
-			let half = getHalf even subL in
-				if even then y::half else x::half
+	let rec aux p l = match l with
+	| [] -> []
+	| [x] -> if p then [x] else []
+	| x::(y::z) -> if p then x::(aux true z) else y::(aux false z)
 	in
-		(getHalf true l), (getHalf false l)
+	((aux true l), (aux false l))
 ;;
 
-let rec fusionne comp l1 l2 =
-	match l1, l2 with
-	| x1::subL1, x2::subL2 ->
-		if comp x1 x2 then
-			x1::(fusionne comp subL1 l2)
-		else
-			x2::(fusionne comp l1 subL2)
+(* Fusionne deux listes triées en conservant l'ordre *)
+let rec fusionne comp l1 l2 = match l1, l2 with
+	| a::b, x::y -> if comp a x then a::(fusionne comp b l2) else x::(fusionne comp l1 y)
 	| _, _ -> l1@l2
 ;;
 
+(* Triage *)
 let rec tri_partition_fusion comp l =
-	let l1, l2 = partitionne l in
-		if (List.length l1)+(List.length l2) < 2 then
-			l1@l2
-		else
-			let sorted1 = tri_partition_fusion comp l1
-			and sorted2 = tri_partition_fusion comp l2 in
-				fusionne comp sorted1 sorted2
+	let (a, b) = partitionne l in
+	if List.length l <= 1 then l
+	else
+		let tried1 = tri_partition_fusion comp a and
+			tried2 = tri_partition_fusion comp b in
+				fusionne comp tried1 tried2
 ;;
 
-(* Tests *)
-
-(*
-tri_partition_fusion (<) myList;;
-tri_partition_fusion (>) myList;;
- *)
-
-
+(* ------------------------------------------------ *)
 (* Tri par arbre binaire de recherche *)
-(* Complexité : O(?) *)
 
+(* Type AB *)
 type 'a arbreBinaire =
 	| Noeud of 'a * 'a arbreBinaire * 'a arbreBinaire
 	| ArbreVide
 ;;
 
-let rec insere_noeud comp x a =
-	match a with
+(* Insere un noeud dans un ABR *)
+let rec insere_noeud comp x a = match a with
+	| Noeud (n, l, r) -> if comp x n then Noeud(n, insere_noeud comp x l, r)
+		else Noeud(n, l, insere_noeud comp x r) 
 	| ArbreVide -> Noeud(x, ArbreVide, ArbreVide)
-	| Noeud(x2, left, right) ->
-		if comp x x2 then
-			Noeud(x2, insere_noeud comp x left, right)
-		else
-			Noeud(x2, left, insere_noeud comp x right)
 ;;
 
-let rec insere_liste_noeuds comp l a =
-	match l with
+(* Insere une liste de noeuds dans un ABR *)
+let rec insere_liste_noeuds comp l a = match l with
 	| [] -> a
-	| x::subL ->
-		let a2 = insere_noeud comp x a in
-			insere_liste_noeuds comp subL a2
+	| x::y -> (insere_liste_noeuds comp y (insere_noeud comp x a))
 ;;
 
-let rec parcours_arbre a =
-	match a with
+(* Retourne une liste résultante d'un parcours de gauche à droite d'un ABR *)
+let rec parcours_arbre a = match a with
 	| ArbreVide -> []
-	| Noeud(x, left, right) -> (parcours_arbre left)@[x]@(parcours_arbre right)
+	| Noeud (n, l, r) -> (parcours_arbre l)@(n::(parcours_arbre r))
 ;;
 
-let tri_par_abr comp l = parcours_arbre (insere_liste_noeuds comp l ArbreVide);;
-
-(* Tests *)
-
-(* 
-tri_par_abr (<) myList;;
-tri_par_abr (>) myList;;
- *)
-
-
-(* Suite *)
-(* Clément, je n'ai pas encore fait l'analyse de complexité de chaque fonction donc je fais arbitrairement choisir tri_par_abr *)
-
-let tri = tri_par_abr;;
-
-let min_list comp l =
-	let nComp a b = not (comp a b) in
-		selectionne_max nComp l
+(* Triage *)
+let rec tri_par_abr comp l = match l with
+	| [] -> []
+	| x::y -> let abr = Noeud(x, ArbreVide, ArbreVide) in
+		parcours_arbre (insere_liste_noeuds comp y abr)
 ;;
+
+(* ------------------------------------------------ *)
+(* Choix de la meilleure fonction de tri *)
+
+let tri comp l = tri_partition_fusion comp l;;
+
+(* ------------------------------------------------ *)
+(* Autres fonctions *)
+
+let min_list comp l = selectionne_max (fun x y -> not(comp x y)) l;;
 
 let rec suppr_doublons l =
 	match l with

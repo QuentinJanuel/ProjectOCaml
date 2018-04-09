@@ -1,9 +1,8 @@
-(* "tri comp l" retourne la liste l triée selon l'ordre comp *)
+(* Fonction de tri suivant un fonction de comparaison *)
 val tri : ('a -> 'a -> bool) -> 'a list -> 'a list
 
-(* "min_list comp l" retourne le minimum de la liste l selon l'ordre comp *)
+(* Renvoie le minimum d'une liste en fonction d'une fonction de comparaison *)
 val min_list : ('a -> 'a -> bool) -> 'a list -> 'a
 
-(* "suppr_doublons l" retourne la liste l sans ses éventuels doublons *)
+(* Supprime tous les doublons d'un liste *)
 val suppr_doublons : 'a list -> 'a list
-
