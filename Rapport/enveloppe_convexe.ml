@@ -42,7 +42,7 @@ let distance_max p1 p2 pa pb =
 ;;
 
 let point_eloigne p1 p2 l =
-	let comp x y = if distance_max x y p1 p2 then true else false in
+	let comp x y = if distance_max p1 p2 x y then true else false in
 		min_list comp l
 ;;
 
@@ -64,7 +64,7 @@ let rec findhull l p q enveloppe =
 let quickhull l =
 	let l = suppr_doublons l in
 	let (pa,pb) = points_depart l in
-	let enveloppe = pa::(pb::[]) in
+	let enveloppe = [pa; pb] in
 	let enveloppe = findhull (points_droite l pa pb) pa pb enveloppe in
 		findhull (points_droite l pb pa) pb pa enveloppe;;
 
@@ -77,4 +77,8 @@ let enveloppe_convexe g n =
 		tracer_polygone(quickhull l));;
 
 initialiser();;
-enveloppe_convexe gen_soleil 1000;;
+enveloppe_convexe gen_rectangle 10000;;
+
+(* let rec loop b = loop b;;
+
+loop 1;; *)
