@@ -32,7 +32,7 @@ let rec points_droite l p1 p2 =
 let equation_droite pa pb =
 	let a = pb.ord-pa.ord
 	and b = pa.abs-pb.abs in
-		let c = -(a*pa.abs+b*pa.ord) in
+		let c = -a*pa.abs-b*pa.ord in
 			a, b, c
 ;;
 
@@ -50,12 +50,8 @@ let distance_max p1 p2 pa pb =
 ;;
 
 let rec point_eloigne p1 p2 l =
-	match l with
-	| [] -> failwith "Calling 'point_eloigne' with an empty list"
-	| [x] -> x
-	| pa::subL ->
-		let pb = point_eloigne p1 p2 subL in
-			if distance_max p1 p2 pa pb then pa else pb
+	let comp a b = distance_max p1 p2 a b in
+		min_list comp l
 ;;
 
 let points_egaux p1 p2 = p1 = p2;;
