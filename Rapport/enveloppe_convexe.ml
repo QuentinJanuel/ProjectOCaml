@@ -121,13 +121,28 @@ let rec gen_tout gens n =
 
 initialiser ();;
 
+let rec gen_heart n =
+	let absFloat x = if x > 0. then x else x*.(-1.) in
+	let rayon () = 
+		let x = float_of_int ((size_x ())/2)
+		and y = float_of_int ((size_y ())/2) in
+			min x y in
+		if n = 0 then [] else
+		let o = (Random.float 6.28) and maxR = (rayon ())/.2.3 in
+			let r = (Random.float maxR)*.(((sin o)*.(sqrt (absFloat (cos o))))/.((sin o)+.7./.5.)-.2.*.(sin o)+.2.) in
+				let x = int_of_float (r*.(cos o))
+				and y = int_of_float (r*.(sin o))+(int_of_float (maxR*.1.4)) in
+					{abs = x; ord = y}::(gen_heart (n-1))
+;;
+
 let gens = [
 	gen_rectangle;
 	gen_cercle;
 	gen_papillon;
 	gen_cervolant;
 	gen_soleil;
-	gen_poisson
+	gen_poisson;
+	gen_heart
 ];;
 
 gen_tout gens 0;;
